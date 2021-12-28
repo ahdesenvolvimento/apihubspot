@@ -7,12 +7,13 @@ export default function Home(props) {
   //   const { code } = useParams();
   const [contato, setContato] = useState([]);
 //   const location = useLocation()
-    const x = new URL(location.href).searchParams.get('code')
-    console.log(x)
-    //   const search = props.location.search;
-    //   const name = new URLSearchParams(search).get('code');
+// const x = new URL(location.href).searchParams.get('code')
+// console.log(x)
+  console.log(window.location.search.split('='))
+  //   const search = props.location.search;
+  //   const name = new URLSearchParams(search).get('code');
 
-    useEffect(() => {
+  useEffect(() => {
     console.log(localStorage.getItem("access-token"));
     // const init = {
     //   method: "GET",
