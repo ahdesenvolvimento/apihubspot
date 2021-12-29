@@ -24,6 +24,6 @@
 1. Cadastrar contato e Atualizar contato
 - Ao preencher os dados e enviar, o sistema irá verificar se existe uma propriedade "weight" associada aos contatos, para o usuário logado, caso tenha ele ignora, caso não tenha ele cria essa propriedade, em seguida o sistema verifica se o e-mail fornecido já está cadastrado, caso seja true, é feito uma sobrescrita dos dados, caso false um novo contato é criado.
 2. Listagem de contatos
-- Ao clicar no botão de "Listar Contatos", no primeiro clique ele não irá exibir os dados, mas fechando e abrindo novamente é listado todos os contatos relacionados ao usuário criado, bem como suas propriedades (email, phone, date_of_birth e weight). OBS: POR SER FUNCIONALIDADE EXTRA, NÃO CONSEGUI IDENTIFICAR A TEMPO A CAUSA DO BUG.
+- Ao clicar no botão de "Listar Contatos", no primeiro clique ele não irá exibir os dados, mas fechando e abrindo novamente é listado todos os contatos relacionados ao usuário logado, bem como suas propriedades (email, phone, date_of_birth e weight). OBS: POR SER FUNCIONALIDADE EXTRA, NÃO CONSEGUI IDENTIFICAR A TEMPO A CAUSA DO BUG.
 3. Deletar contato
 - Ao ser exibida a listagem de contatos, irá abrir um modal com uma tabela (responsiva) que irá conter os dados dos contatos e um botão de excluir, clicando no botão o contato será deletado e o modal será fechado. OBS: FUNCIONALIDADE EXTRA.
