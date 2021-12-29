@@ -151,48 +151,54 @@ export default function Home() {
 
   return (
     <>
-        <div className={styles.title}>
-          <h4>Formulário de contatos</h4>
-        </div>
-        <form method="POST" action="" onSubmit={cadastrarContato}>
-          <Input
-            text="E-mail"
-            name="email"
-            placholder="Insira o e-mail do contato"
-            type="email"
-            handleOnChange={handleChange}
-          />
-          <Input
-            text="Telefone"
-            name="phone"
-            placholder="Telefone"
-            type="text"
-            handleOnChange={handleChange}
-          />
-          <Input
-            text="Data do aniversário"
-            name="date_of_birth"
-            type="date"
-            handleOnChange={handleChange}
-          />
-          <Input
-            text="Peso"
-            name="weight"
-            placholder="Peso (kg)"
-            type="text"
-            handleOnChange={handleChange}
-          />
-          <div className={styles.button}>
-            <SubmitButton text="Criar contato" />
-            <button
-              type="button"
-              className="btn btn-primary mx-2"
-              onClick={listContatos}
-            >
-              Listar Contatos
-            </button>
+      <div className={styles.title}>
+        <h4>Formulário de contatos</h4>
+      </div>
+      <form method="POST" action="" onSubmit={cadastrarContato}>
+        <Input
+          text="E-mail"
+          name="email"
+          placholder="Insira o e-mail do contato"
+          type="email"
+          handleOnChange={handleChange}
+        />
+        <Input
+          text="Telefone"
+          name="phone"
+          placholder="Telefone"
+          type="text"
+          handleOnChange={handleChange}
+        />
+        <Input
+          text="Data do aniversário"
+          name="date_of_birth"
+          type="date"
+          handleOnChange={handleChange}
+        />
+        <Input
+          text="Peso"
+          name="weight"
+          placholder="Peso (kg)"
+          type="text"
+          handleOnChange={handleChange}
+        />
+        <div className={styles.button}>
+          <div className="row">
+            <div className="col-md-6 mt-3">
+              <SubmitButton text="Criar contato" />
+            </div>
+            <div className="col-md-6 mt-3">
+              <button
+                type="button"
+                className="btn btn-primary mx-2"
+                onClick={listContatos}
+              >
+                Listar Contatos
+              </button>
+            </div>
           </div>
-        </form>
+        </div>
+      </form>
       <MyModal
         show={show}
         handleClose={handleClose}
