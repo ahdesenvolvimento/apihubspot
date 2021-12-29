@@ -3,66 +3,85 @@ import Input from "../layout/Input";
 import SubmitButton from "../layout/SubmitButton";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LocalStorage } from 'ttl-localstorage';
-export default function Home(props) {
+import { LocalStorage } from "ttl-localstorage";
+import MyModal from "../layout/MyModal";
+import Contatos from "../layout/Contatos";
+export default function Home() {
   //   const { code } = useParams();
   const [contato, setContato] = useState([]);
-  // LocalStorage.put('myKey', 'data', 20);
+  const [message, setMessage] = useState();
+  const [titulo, setTitulo] = useState();
+  const [show, setShow] = useState(false);
+  const [contatos, setContatos] = useState([]);
+  const handleClose = () => setShow(false);
+  const handleShow = (message, titulo) => {
+    setTitulo(titulo);
+    setMessage(message);
+    setShow(true);
+  };
 
   let navigate = useNavigate();
-  //   const location = useLocation()
-  // const x = new URL(location.href).searchParams.get('code')
-  // console.log(x)
-  let code = (window.location.search.split('='))
-  //   const search = props.location.search;
-  //   const name = new URLSearchParams(search).get('code');
+
+  let code = window.location.search.split("=");
 
   useEffect(() => {
-    // console.log("to aqui " + localStorage.getItem("access-token"));
-    // console.log('12312 ' + LocalStorage.get('access-token'))
-    // console.log('1231212321312321 ' + LocalStorage.get('refresh-token'))
-    // // var init;
-    if (!LocalStorage.get('access-token')){
+    if (!LocalStorage.get("access-token")) {
+      if (code[1]) {
+        const init = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code: code[1] }),
+        };
+        fetch("http://localhost:8000/api/auth/token/2/", init)
+          .then((response) => response.json())
+          .then((data) => {
+            LocalStorage.put("access-token", data.access_token, 1800);
+            LocalStorage.put("refresh-token", data.refresh_token);
+            // localStorage.setItem("access-token", data.access_token);
+            // navigate("/");
+          })
+          .catch((error) => console.log(error));
+      } else {
+        const init = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refresh_token: LocalStorage.get("refresh-token"),
+          }),
+        };
+        fetch("http://localhost:8000/api/auth/token/1/", init)
+          .then((response) => response.json())
+          .then((data) => {
+            LocalStorage.put("access-token", data.access_token, 1800);
+            LocalStorage.put("refresh-token", data.refresh_token);
+            navigate("/");
+          })
+          .catch((error) => console.log(error));
+      }
+    } else {
       const init = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ "code": code[1] })
-      }
-      fetch("http://localhost:8000/api/auth/token/", init)
-      // fetch("http://localhost:8000/api/auth/token/", init)
+        body: JSON.stringify({
+          refresh_token: LocalStorage.get("refresh-token"),
+        }),
+      };
+      fetch("http://localhost:8000/api/auth/token/1/", init)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-          LocalStorage.put('access-token', data.access_token, 1800);
-          LocalStorage.put('refresh-token', data.refresh_token);
-          // localStorage.setItem("access-token", data.access_token);
-          navigate('/')
+          LocalStorage.put("access-token", data.access_token, 1800);
+          LocalStorage.put("refresh-token", data.refresh_token);
+          navigate("/");
         })
-        .catch((error) => console.log(error))
-    }else{
-      const init = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ "refresh_token": LocalStorage.get('refresh-token') })
-      }
-      fetch("http://localhost:8000/api/auth/token/", init)
-      // fetch("http://localhost:8000/api/auth/token/", init)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          LocalStorage.put('access-token', data.access_token, 1800);
-          LocalStorage.put('refresh-token', data.refresh_token);
-          // localStorage.setItem("access-token", data.access_token);
-          navigate('/')
-        })
-        .catch((error) => console.log(error))
+        .catch((error) => console.log(error));
     }
   }, []);
-  // if (localStorage.getItem) {
 
   const cadastrarContato = (e) => {
     e.preventDefault();
@@ -71,33 +90,70 @@ export default function Home(props) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ "data": { "properties": contato }, "access_token": LocalStorage.get('access-token') }),
+      body: JSON.stringify({
+        data: { properties: contato },
+        access_token: LocalStorage.get("access-token"),
+      }),
     };
     fetch("http://localhost:8000/contatos/create/", init)
-      .then()
-      .then()
+      .then((response) => response.json())
+      .then((data) => {
+        handleShow(data.message, "Sucesso!");
+      })
       .catch((error) => console.log(error));
   };
-  function handleTeste(e) {
+  function listContatos(e) {
     e.preventDefault();
     const init = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ "access_token": localStorage.getItem("access-token") }),
+      body: JSON.stringify({
+        access_token: LocalStorage.get("access-token"),
+      }),
     };
     fetch("http://localhost:8000/contatos/", init)
-      .then()
-      .then()
+      .then((response) => response.json())
+      .then((data) => {
+        setContatos(data.contatos);
+        handleShow(
+          <Contatos data={contatos} deleteContato={deleteContato} />,
+          "Listagem de Contatos"
+        );
+      })
       .catch((error) => console.log(error));
   }
   const handleChange = (e) => {
     setContato({ ...contato, [e.target.name]: e.target.value });
   };
+
+  const deleteContato = (e) => {
+    // e.preventDefault()
+    const init = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        access_token: LocalStorage.get("access-token"),
+      }),
+    };
+    fetch("http://localhost:8000/contatos/delete/" + e, init)
+      .then((response) => response.json())
+      .then((data) => {
+        setContatos(data.contatos);
+        handleClose();
+        alert("Contato deletado!");
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
-    <div className={styles.content}>
-      <div className={styles.form}>
+    <>
+        <div className={styles.title}>
+          <h4>Formulário de contatos</h4>
+        </div>
         <form method="POST" action="" onSubmit={cadastrarContato}>
           <Input
             text="E-mail"
@@ -126,10 +182,23 @@ export default function Home(props) {
             type="text"
             handleOnChange={handleChange}
           />
-          <SubmitButton text="Criar contato" />
-          <button type="button" onClick={handleTeste}>listar</button>
+          <div className={styles.button}>
+            <SubmitButton text="Criar contato" />
+            <button
+              type="button"
+              className="btn btn-primary mx-2"
+              onClick={listContatos}
+            >
+              Listar Contatos
+            </button>
+          </div>
         </form>
-      </div>
-    </div>
+      <MyModal
+        show={show}
+        handleClose={handleClose}
+        message={message}
+        title={titulo}
+      />
+    </>
   );
 }
