@@ -5,7 +5,7 @@
 - Foi utilizado Django Restframework para desenvolver a api que se comunica com o frontend e a api do Hubspot.
 - Frontend foi feito em React.
 - Não foi implementado banco de dados na api que se comunica com o Hubspot.
-- Apesar de conter somente duas telas, o layout esta responsível.
+- Apesar de conter somente duas telas, o layout esta responsivo.
 
 ### Funcionalidades criadas
 
